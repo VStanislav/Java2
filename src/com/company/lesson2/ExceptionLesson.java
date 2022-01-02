@@ -32,7 +32,7 @@ public class ExceptionLesson {
     }
 
 
-    private static int checkNumber(String[][] arr, int getSumArray)throws MyArrayDataException{
+    private static int checkNumber(String[][] arr, int getSumArray){
 
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr.length; j++) {
@@ -64,7 +64,7 @@ public class ExceptionLesson {
 
 }
 
-class MyArraySizeException extends Exception{
+class MyArraySizeException extends RuntimeException{
     public MyArraySizeException(){
         super("Run MyArraySizeException ! Check this!");
     }
