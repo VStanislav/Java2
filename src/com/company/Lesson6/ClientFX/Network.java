@@ -30,7 +30,7 @@ public class Network {
             this.socket = new Socket(this.host,this.port);
             this.socketInput = new DataInputStream(socket.getInputStream());
             this.socketOutput = new DataOutputStream(socket.getOutputStream());
-            return true
+            return true;
         }catch (IOException e){
             e.printStackTrace();
             System.err.println("Не удалось установить соединение");
@@ -47,18 +47,22 @@ public class Network {
         }
     }
 
-    public void waitMessage(Consumer<String> messageHandler){
-        while (true){
-            try {
-                String message = this.socketInput.readUTF();
-
-                messageHandler.accept(message);
-            }catch (IOException e){
-                e.printStackTrace();
-                System.err.println("Не удалось прочитать сообщение  от сервера");
-                break;
+    public void waitMessages(Consumer<String> messageHandler){
+        Thread thread = new Thread(() -> {
+            while (true) {
+                try {
+                    String message = this.socketInput.readUTF();
+                    messageHandler.accept(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.err.println("Не удалось прочитать сообщение  от сервера");
+                    break;
+                }
             }
-        }
+        });
+        thread.setDaemon(true) ;
+        thread.start();
+
     }
 
     public void close(){

@@ -14,21 +14,33 @@ public class EchoServer {
         try(ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Сервер начал свою работу, ожидание подключения");
             Socket clientSocket = serverSocket.accept();
+            System.out.println("Клиент подключился");
             DataInputStream input = new DataInputStream(clientSocket.getInputStream());
             DataOutputStream output = new DataOutputStream(clientSocket.getOutputStream());
 
-            while (true){
+            processClientConnection(input, output);
+
+
+        }catch (IOException e){
+            System.err.println("Ошибка подключения к порту " + PORT);
+            e.printStackTrace();
+        }
+    }
+
+    private static void processClientConnection(DataInputStream input, DataOutputStream output) throws IOException {
+        while (true){
+            try {
                 String message = input.readUTF();
                 if (message.equals("/end")){
                     break;
                 }
+                System.out.println(input.readUTF());
                 output.writeUTF("Echo " + message);
-            }
+            } catch (IOException e) {
+                System.out.println("Соединение закрыто");
+                break;
 
-            System.out.println("Клиент подключился");
-        }catch (IOException e){
-            System.err.println("Ошибка подключения к порту " + PORT);
-            e.printStackTrace();
+            }
         }
     }
 }
