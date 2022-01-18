@@ -26,12 +26,12 @@ public class EchoServerMy {
                 public void run() {
                     try {
                         while (true) {
-                            String messageFromServer = inputStream.readUTF();
-                            if (messageFromServer.equals("/end")) {
-                                System.out.println("Цикл по чтению у сервера закончен");
-                                break;
-                            }
-                            System.out.println("От клиента: " + messageFromServer);
+                                String messageFromClient = inputStream.readUTF();
+                                if (messageFromClient.equals("/end")) {
+                                    System.out.println("Цикл по чтению у сервера закончен");
+                                    break;
+                                }
+                                System.out.println("От клиента: " + messageFromClient);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

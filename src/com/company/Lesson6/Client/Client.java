@@ -55,23 +55,6 @@ public class Client {
                 });
                 threadRead.setDaemon(true);
                 threadRead.start();
-
-
-//                    while (true){
-//                        outputStream.writeUTF(reader.readLine());
-//                        String messageFromServer = inputStream.readUTF();
-//                        if (messageFromServer.equals("/end")){
-//                            closeConnection();
-//                        }
-//                        System.out.println("От сервера: "+messageFromServer);
-//
-//                    }
-
-//                }catch (IOException e){
-//                    System.out.println("Ошибка получения сообщения");
-//                    e.printStackTrace();
-//                }
-
             }
         }).start();
     }
