@@ -18,16 +18,8 @@ public class User {
         this(login,password,null);
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getUserName() {
+     public String getUserName() {
         return userName;
-    }
-
-    public String getLogin() {
-        return login;
     }
 
     @Override

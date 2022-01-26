@@ -11,6 +11,7 @@ public class ServerApp {
         if (args.length != 0){
             port = Integer.parseInt(args[0]);
         }
+
         new MyServer().start(port);
     }
 }

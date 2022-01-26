@@ -12,3 +12,4 @@
         <Button fx:id="authButton" layoutX="88.0" layoutY="150.0" mnemonicParsing="false" onAction="#executeAuth" prefHeight="25.0" prefWidth="149.0" text="Войти!" />
     </children>
 </AnchorPane>
+
