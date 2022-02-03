@@ -2,10 +2,12 @@ package ru.voronkov.client.controllers;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.WindowEvent;
 import ru.voronkov.client.ClientChat;
 import ru.voronkov.client.dialogs.Dialogs;
 import ru.voronkov.client.model.Network;

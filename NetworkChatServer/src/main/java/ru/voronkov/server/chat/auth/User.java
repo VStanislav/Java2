@@ -6,12 +6,16 @@ public class User {
 
     private final String login;
     private final String password;
-    private final String userName;
+    private String userName;
 
     public User(String login, String password, String userName) {
         this.login = login;
         this.password = password;
         this.userName = userName;
+    }
+
+    public void setUsername(String username) {
+        this.userName = username;
     }
 
     public User(String login,String password) {

@@ -144,5 +144,9 @@ public class Network {
         return connected;
     }
 
+    public void changeUsername(String newUsername) throws IOException {
+        sendCommand(Command.updateUsernameCommand(newUsername));
+    }
+
 
 }

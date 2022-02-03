@@ -5,8 +5,11 @@ import ru.voronkov.clientserver.CommandType;
 import ru.voronkov.clientserver.commands.AuthCommandData;
 import ru.voronkov.clientserver.commands.PrivateMessageCommandData;
 import ru.voronkov.clientserver.commands.PublicMessageCommandData;
+import ru.voronkov.clientserver.commands.UpdateUsernameCommandData;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class ClientHandler {
@@ -29,20 +32,22 @@ public class ClientHandler {
         outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
 
         new Thread(() -> {
+
             try {
-                authenticate();
-                readMessages();
-            } catch (IOException e) {
-                System.err.println("Не смогли прочитать сообщения клиента");
-                e.printStackTrace();
-            }finally {
-                try {
-                    closeConnection();
+                    authenticate();
+                    readMessages();
                 } catch (IOException e) {
-                    System.err.println("Не смогли закрыть соединение");
+                    System.err.println("Не смогли прочитать сообщения клиента");
                     e.printStackTrace();
+                }finally {
+                    try {
+                        closeConnection();
+                        System.out.println("close connection");
+                    } catch (IOException e) {
+                        System.err.println("Не смогли закрыть соединение");
+                        e.printStackTrace();
+                    }
                 }
-            }
         }).start();
 
     }
@@ -61,20 +66,17 @@ public class ClientHandler {
                 String password = date.getPassword();
 
                 String userName = server.getAuthService().getUserNameByLoginAndPassword(login, password);
-//                System.out.println(userName);
 
                 if (userName == null){
                     sendCommand(Command.errorCommand("Неверные логин и пароль"));
                 }else if (server.isUserNameBusy(userName)){
                     sendCommand(Command.errorCommand("Пользователь занят/ Busy"));
                 }else {
-//                    System.out.println("есть контакт?");
                     this.userName=userName;
                     sendCommand(Command.authOkCommand(userName));
                     server.subscribe(this);
                     return;
                 }
-//                System.out.println("после проверок");
             }
         }
     }
@@ -89,7 +91,6 @@ public class ClientHandler {
             command = (Command) inputStream.readObject();
         } catch (ClassNotFoundException e) {
             System.err.println("Не смогли прочитать класс Command ");
-            e.printStackTrace();
         }
         return command;
     }
@@ -115,6 +116,15 @@ public class ClientHandler {
                 case PUBLIC_MESSAGE: {
                     PublicMessageCommandData date = (PublicMessageCommandData) command.getData();
                     processMessage(date.getMessage());
+                    break;
+                }
+                case UPDATE_USERNAME: {
+                    UpdateUsernameCommandData data = (UpdateUsernameCommandData) command.getData();
+                    String newUsername = data.getUsername();
+                    server.getAuthService().updateUsername(userName, newUsername);
+                    userName = newUsername;
+                    server.notifyClientUserListUpdated();
+                    break;
                 }
             }
         }
