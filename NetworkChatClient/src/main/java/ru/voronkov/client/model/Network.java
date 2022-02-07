@@ -23,6 +23,7 @@ public class Network {
     private static Network INSTANCE;
     private Thread readMessageProcess;
     private boolean connected;
+    private String currentUsername;
 
 
     public static Network getInstance(){
@@ -147,6 +148,15 @@ public class Network {
     public void changeUsername(String newUsername) throws IOException {
         sendCommand(Command.updateUsernameCommand(newUsername));
     }
+
+    public String getCurrentUsername() {
+        return currentUsername;
+    }
+
+    public void setCurrentUsername(String currentUsername) {
+        this.currentUsername = currentUsername;
+    }
+
 
 
 }
