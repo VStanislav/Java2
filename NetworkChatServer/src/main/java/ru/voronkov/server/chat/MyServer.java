@@ -1,5 +1,7 @@
 package ru.voronkov.server.chat;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.voronkov.clientserver.Command;
 import ru.voronkov.server.chat.auth.IAuthService;
 import ru.voronkov.server.chat.auth.PersistentDbAuthService;
@@ -14,6 +16,8 @@ import java.util.concurrent.Executors;
 
 public class MyServer {
 
+    private static final Logger LOGGER = LogManager.getLogger(MyServer.class);
+
     private final List<ClientHandler> clients = new ArrayList<>();
     private IAuthService authService;
     private ExecutorService executorService;
@@ -24,7 +28,7 @@ public class MyServer {
 
     public void start(int port) {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Сервер стартанул");
+            LOGGER.info("Сервер стартанул");
             authService = createAuthService();
             authService.start();
             executorService = Executors.newCachedThreadPool();
@@ -33,7 +37,7 @@ public class MyServer {
             }
 
         } catch (IOException e) {
-            System.err.println("Не удалось занять переданный порт");
+            LOGGER.error("Не удалось занять переданный порт");
             e.printStackTrace();
         } finally {
             if (authService != null) {
@@ -50,10 +54,10 @@ public class MyServer {
         }
 
         private void waitAndProcessClientConnection (ServerSocket serverSocket) throws IOException {
-            System.out.println("Ожидание нового подключения");
+            LOGGER.info("Ожидание нового подключения");
             Socket clientSocket = serverSocket.accept();
 
-            System.out.println("Соединение прошло");
+            LOGGER.info("Соединение прошло");
             ClientHandler clientHandler = new ClientHandler(this, clientSocket);
             clientHandler.handle();
 

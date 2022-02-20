@@ -1,5 +1,7 @@
 package ru.voronkov.server.chat;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.voronkov.clientserver.Command;
 import ru.voronkov.clientserver.CommandType;
 import ru.voronkov.clientserver.commands.AuthCommandData;
@@ -14,6 +16,7 @@ import java.net.Socket;
 
 public class ClientHandler {
 
+    private static final Logger LOGGER = LogManager.getLogger(ClientHandler.class);
 
     private final MyServer myServer;
     private final Socket clientSocket;
@@ -37,14 +40,14 @@ public class ClientHandler {
                     authenticate();
                     readMessages();
                 } catch (IOException e) {
-                    System.err.println("Не смогли прочитать сообщения клиента");
+                    LOGGER.error("Не смогли прочитать сообщения клиента");
                     e.printStackTrace();
                 }finally {
                     try {
                         closeConnection();
-                        System.out.println("close connection");
+                        LOGGER.info("close connection");
                     } catch (IOException e) {
-                        System.err.println("Не смогли закрыть соединение");
+                        LOGGER.error("Не смогли закрыть соединение");
                         e.printStackTrace();
                     }
                 }
@@ -90,7 +93,7 @@ public class ClientHandler {
         try {
             command = (Command) inputStream.readObject();
         } catch (ClassNotFoundException e) {
-            System.err.println("Не смогли прочитать класс Command ");
+            LOGGER.error("Не смогли прочитать класс Command ");
         }
         return command;
     }
