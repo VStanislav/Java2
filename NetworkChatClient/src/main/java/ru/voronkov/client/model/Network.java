@@ -1,5 +1,7 @@
 package ru.voronkov.client.model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.voronkov.clientserver.Command;
 
 import java.io.*;
@@ -10,6 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Network {
+
+    private static final Logger LOGGER = LogManager.getLogger(Network.class);
 
     private final List<ReadCommandListner> listners = new CopyOnWriteArrayList<>();
 
@@ -55,7 +59,7 @@ public class Network {
             return true;
         }catch (IOException e){
             e.printStackTrace();
-            System.err.println("Не удалось установить соединение");
+            LOGGER.error("Не удалось установить соединение");
             return false;
         }
     }
@@ -72,7 +76,7 @@ public class Network {
         try {
             socketOutput.writeObject(command);
         }catch (IOException e){
-            System.err.println("Не удалось отправить сообщение на сервер");
+            LOGGER.error("Не удалось отправить сообщение на сервер");
             throw e;
         }
     }
@@ -100,7 +104,7 @@ public class Network {
                     }
 
                 } catch (IOException e) {
-                    System.err.println("Не удалось прочитать сообщение  от сервера");
+                    LOGGER.error("Не удалось прочитать сообщение  от сервера");
                     e.printStackTrace();
                     close();
                     break;
@@ -115,7 +119,7 @@ public class Network {
         try {
             command = (Command) socketInput.readObject();
         } catch (ClassNotFoundException e) {
-            System.err.println("Не смогли прикастить класс");
+            LOGGER.error("Не смогли прикастить класс");
             e.printStackTrace();
         }
 

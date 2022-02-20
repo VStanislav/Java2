@@ -10,6 +10,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.voronkov.client.controllers.AuthController;
 import ru.voronkov.client.controllers.ClientController;
 import ru.voronkov.client.model.Network;
@@ -18,6 +20,8 @@ import ru.voronkov.client.service.ClientHistory;
 import java.io.IOException;
 
 public class ClientChat extends Application {
+
+    private static final Logger LOGGER = LogManager.getLogger(ClientChat.class);
 
     public static ClientChat INSTANCE;
 

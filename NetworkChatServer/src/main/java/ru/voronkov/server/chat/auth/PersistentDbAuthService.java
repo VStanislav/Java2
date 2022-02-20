@@ -1,8 +1,13 @@
 package ru.voronkov.server.chat.auth;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.*;
 
 public class PersistentDbAuthService implements IAuthService {
+
+    private static final Logger LOGGER = LogManager.getLogger(PersistentDbAuthService.class);
 
     private static final String DB_URL = "jdbc:sqlite:users.db";
     private Connection connection;
@@ -13,14 +18,14 @@ public class PersistentDbAuthService implements IAuthService {
     @Override
     public void start() {
         try {
-            System.out.println("Подключение к базе данных пользователей...");
+            LOGGER.info("Подключение к базе данных пользователей...");
             connection = DriverManager.getConnection(DB_URL);
-            System.out.println("Подключение к базе данных успешно.");
+            LOGGER.info("Подключение к базе данных успешно.");
             getUsernameStatement = createGetUsernameStatement();
             updateUsernameStatement = createUpdateUsernameStatement();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-            System.err.println("Ошиюка подключения к БД по ссылке: " + DB_URL);
+            LOGGER.error("Ошиюка подключения к БД по ссылке: {}", DB_URL);
             throw new RuntimeException("Ошибка авторизации БД");
         }
     }
@@ -39,7 +44,7 @@ public class PersistentDbAuthService implements IAuthService {
             resultSet.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-            System.err.printf("Ошибка получения имени пользователя по паре : Login: %s; password: %s%n", login, password);
+            LOGGER.error("Ошибка получения имени пользователя по паре : Login: {}; password: {}%n", login, password);
         }
 
         return username;
@@ -51,10 +56,10 @@ public class PersistentDbAuthService implements IAuthService {
             updateUsernameStatement.setString(1, newUsername);
             updateUsernameStatement.setString(2, currentUsername);
             int result = updateUsernameStatement.executeUpdate();
-            System.out.println("Обновление имени пользователя. Обновлено полей: " + result);
+            LOGGER.info("Обновление имени пользователя. Обновлено полей: {}", result);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-            System.err.printf("Ошибка обновления имени пользователя. искомое ИП: %s; новое ИП: %s%n",
+            LOGGER.error("Ошибка обновления имени пользователя. искомое ИП: {}; новое ИП: {}%n",
                     currentUsername, newUsername);
         }
     }
@@ -63,12 +68,12 @@ public class PersistentDbAuthService implements IAuthService {
     public void stop() {
         if (connection != null) {
             try {
-                System.out.println("Закрытие соединения с БД");
+                LOGGER.info("Закрытие соединения с БД");
                 connection.close();
-                System.out.println("Соединение с БД успешно закрыто.");
+                LOGGER.info("Соединение с БД успешно закрыто.");
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
-                System.err.println("Ошибка закрытия БД по URL: " + DB_URL);
+                LOGGER.error("Ошибка закрытия БД по URL: {}", DB_URL);
                 throw new RuntimeException("Ошибка сервиса БД");
             }
         }
