@@ -13,6 +13,7 @@ import javafx.stage.WindowEvent;
 import ru.voronkov.client.controllers.AuthController;
 import ru.voronkov.client.controllers.ClientController;
 import ru.voronkov.client.model.Network;
+import ru.voronkov.client.service.ClientHistory;
 
 import java.io.IOException;
 
@@ -38,6 +39,13 @@ public class ClientChat extends Application {
     @Override
     public void init() throws Exception {
         INSTANCE = this;
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        Network.getInstance().close();
+        ClientController.getClientHistoryService().close();
     }
 
     public void initViews() throws IOException {

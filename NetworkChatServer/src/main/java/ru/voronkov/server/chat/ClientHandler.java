@@ -15,7 +15,7 @@ import java.net.Socket;
 public class ClientHandler {
 
 
-    private final MyServer server;
+    private final MyServer myServer;
     private final Socket clientSocket;
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
@@ -23,7 +23,7 @@ public class ClientHandler {
     private String userName;
 
     public ClientHandler(MyServer myServer,Socket clientSocket) {
-        this.server = myServer;
+        this.myServer = myServer;
         this.clientSocket = clientSocket;
     }
 
@@ -31,7 +31,7 @@ public class ClientHandler {
         inputStream = new ObjectInputStream(clientSocket.getInputStream());
         outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
 
-        new Thread(() -> {
+        myServer.getExecutorService().execute(() -> {
 
             try {
                     authenticate();
@@ -48,7 +48,7 @@ public class ClientHandler {
                         e.printStackTrace();
                     }
                 }
-        }).start();
+        });
 
     }
 
@@ -65,16 +65,16 @@ public class ClientHandler {
                 String login = date.getLogin();
                 String password = date.getPassword();
 
-                String userName = server.getAuthService().getUserNameByLoginAndPassword(login, password);
+                String userName = myServer.getAuthService().getUserNameByLoginAndPassword(login, password);
 
                 if (userName == null){
                     sendCommand(Command.errorCommand("Неверные логин и пароль"));
-                }else if (server.isUserNameBusy(userName)){
+                }else if (myServer.isUserNameBusy(userName)){
                     sendCommand(Command.errorCommand("Пользователь занят/ Busy"));
                 }else {
                     this.userName=userName;
                     sendCommand(Command.authOkCommand(userName));
-                    server.subscribe(this);
+                    myServer.subscribe(this);
                     return;
                 }
             }
@@ -110,7 +110,7 @@ public class ClientHandler {
                     PrivateMessageCommandData date = (PrivateMessageCommandData) command.getData();
                     String recipient = date.getReceiver();
                     String privateMessage = date.getMessage();
-                    server.sendPrivateMessage(this, recipient, privateMessage);
+                    myServer.sendPrivateMessage(this, recipient, privateMessage);
                     break;
                 }
                 case PUBLIC_MESSAGE: {
@@ -121,9 +121,9 @@ public class ClientHandler {
                 case UPDATE_USERNAME: {
                     UpdateUsernameCommandData data = (UpdateUsernameCommandData) command.getData();
                     String newUsername = data.getUsername();
-                    server.getAuthService().updateUsername(userName, newUsername);
+                    myServer.getAuthService().updateUsername(userName, newUsername);
                     userName = newUsername;
-                    server.notifyClientUserListUpdated();
+                    myServer.notifyClientUserListUpdated();
                     break;
                 }
             }
@@ -131,11 +131,11 @@ public class ClientHandler {
     }
 
     private void processMessage(String message) throws IOException {
-        this.server.broadCastMessage(message,this);
+        this.myServer.broadCastMessage(message,this);
     }
 
     private void closeConnection () throws IOException {
-        server.unsubscribe(this);
+        myServer.unsubscribe(this);
         clientSocket.close();
     }
 

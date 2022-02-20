@@ -32,7 +32,7 @@ public class ClientController {
 
     private ClientChat application;
     private static final int LAST_MESSAGES = 100;
-    private ClientHistory clientHistoryService;
+    private static ClientHistory clientHistoryService;
 
     public void sendMessage() {
         String message = textField.getText().trim();
@@ -63,8 +63,14 @@ public class ClientController {
     }
 
     public void createChatHistory() {
-        this.clientHistoryService = new ClientHistory(Network.getInstance().getCurrentUsername());
+        clientHistoryService = new ClientHistory(Network.getInstance().getCurrentUsername());
         clientHistoryService.init();
+    }
+
+    private void loadChatHistory() {
+        String rows = clientHistoryService.loadLastRows2(LAST_MESSAGES);
+        textArea.clear();
+        textArea.setText(rows);
     }
 
     private void appendMessageToChat(String sender, String message) {
@@ -111,8 +117,9 @@ public class ClientController {
         });
     }
 
-    public void closeChat(ActionEvent actionEvent) {
+    public void closeChat(ActionEvent actionEvent) throws Exception {
         clientHistoryService.close();
+        Network.getInstance().close();
         ClientChat.INSTANCE.getChatStage().close();
     }
 
@@ -133,11 +140,6 @@ public class ClientController {
 
         }
     }
-    private void loadChatHistory() {
-        String rows = clientHistoryService.loadLastRows2(LAST_MESSAGES);
-        textArea.clear();
-        textArea.setText(rows);
-    }
 
     public void about(ActionEvent actionEvent) {
         Dialogs.AboutDialog.INFO.show();
@@ -145,5 +147,9 @@ public class ClientController {
 
     public void clearButton(ActionEvent actionEvent) {
         textField.clear();
+    }
+
+    public static ClientHistory getClientHistoryService() {
+        return clientHistoryService;
     }
 }
