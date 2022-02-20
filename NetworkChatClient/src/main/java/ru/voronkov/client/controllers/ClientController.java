@@ -16,6 +16,11 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
+import javafx.event.ActionEvent;
+import javafx.scene.control.*;
+import ru.voronkov.client.dialogs.Dialogs;
+import java.util.Optional;
+
 
 public class ClientController {
 
@@ -92,5 +97,35 @@ public class ClientController {
                 }
             }
         });
+    }
+
+    public void closeChat(ActionEvent actionEvent) {
+        ClientChat.INSTANCE.getChatStage().close();
+    }
+
+    public void changeUserName(ActionEvent actionEvent) {
+        TextInputDialog editDialog = new TextInputDialog();
+        editDialog.setTitle("Изменить имя пользователя");
+        editDialog.setHeaderText("Введите новое имя пользователя");
+        editDialog.setContentText("Имя пользователя:");
+
+        Optional<String> result = editDialog.showAndWait();
+        if (result.isPresent()) {
+            try {
+                Network.getInstance().changeUsername(result.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Dialogs.NetworkError.SEND_MESSAGE.show();
+            }
+
+        }
+    }
+
+    public void about(ActionEvent actionEvent) {
+        Dialogs.AboutDialog.INFO.show();
+    }
+
+    public void clearButton(ActionEvent actionEvent) {
+        textField.clear();
     }
 }

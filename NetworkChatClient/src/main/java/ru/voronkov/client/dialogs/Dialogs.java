@@ -18,12 +18,12 @@ public class Dialogs {
         }
 
         public void show(){
-            showDialog(Alert.AlertType.ERROR, TYPE,message);
+            showDialog(Alert.AlertType.ERROR,TITLE, TYPE,message);
 
         }
 
         public void show(String errorMessage){
-            showDialog(Alert.AlertType.ERROR, TYPE,errorMessage);
+            showDialog(Alert.AlertType.ERROR,TITLE, TYPE,errorMessage);
 
         }
     }
@@ -41,16 +41,32 @@ public class Dialogs {
         }
 
         public void show(){
-            showDialog(Alert.AlertType.ERROR, TYPE,message);
+            showDialog(Alert.AlertType.ERROR,TITLE, TYPE,message);
         }
     }
 
-    private static void showDialog(Alert.AlertType dialogType, String title, String message){
+    private static void showDialog(Alert.AlertType dialogType, String title, String type, String message){
         Alert alert = new Alert(dialogType);
         alert.initOwner(ClientChat.INSTANCE.getChatStage());
         alert.setTitle(title);
         alert.setHeaderText(title);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public enum AboutDialog {
+        INFO(String.format("Чат создан %s %n при участии %s %n","Воронков Станислав", "Титов Владимир"));
+
+        private final String message;
+        private static final String TITLE = "Информация о программе";
+        private static final String TYPE = " 'Проект Online Chat' ver. 1.03";
+
+        AboutDialog(String message) {
+            this.message = message;
+        }
+
+        public void show() {
+            showDialog(Alert.AlertType.INFORMATION, TITLE, TYPE, message);
+        }
     }
 }

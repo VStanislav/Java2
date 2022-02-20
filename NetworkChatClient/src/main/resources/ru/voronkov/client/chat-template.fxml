@@ -1,24 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.voronkov.client.controllers.ClientController">
-   <top>
-      <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Chat for GB univercity" BorderPane.alignment="CENTER" />
-   </top>
    <center>
       <TextArea fx:id="textArea" editable="false" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </center>
    <bottom>
       <HBox prefHeight="25.0" BorderPane.alignment="CENTER">
          <children>
-            <TextField fx:id="textField" maxHeight="1.7976931348623157E308" onAction="#sendMessage" HBox.hgrow="ALWAYS" />
-            <Button fx:id="sendButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#sendMessage" text="Send" />
+            <TextField fx:id="textField" maxHeight="1.7976931348623157E308" onAction="#sendMessage" prefHeight="25.0" prefWidth="459.0" HBox.hgrow="ALWAYS" />
+            <Button fx:id="sendButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#sendMessage" text="Отправить" />
+            <Button fx:id="clearButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#clearButton" text="Очистить" />
          </children>
       </HBox>
    </bottom>
    <left>
       <ListView fx:id="userList" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
    </left>
+   <top>
+      <HBox prefHeight="25.0" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar prefHeight="25.0" prefWidth="250.0">
+               <menus>
+                  <Menu mnemonicParsing="false" text="Файл">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#closeChat" text="Закрыть" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Редактирование">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#changeUserName" text="Смена имя" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Помощь">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#about" text="О программе" />
+                     </items>
+                  </Menu>
+               </menus>
+            </MenuBar>
+            <Label alignment="CENTER" prefHeight="25.0" prefWidth="368.0" text="Онлайн чат">
+               <padding>
+                  <Insets right="50.0" />
+               </padding>
+            </Label>
+         </children>
+      </HBox>
+   </top>
 </BorderPane>
